@@ -49,7 +49,7 @@ def fal_bak(images_list, user_name, age, burc, status):
 
 # --- 3. ANA UYGULAMA AKIŞI ve ARAYÜZ ---
 
-st.title("☕ Sultan Abla - Çok Fotoğraflı Fal")
+st.title("☕ Sultan Abla -")
 st.markdown("### Kişisel Detaylarını Gir, 3 Fincan Fotoğrafını Yükle! 👇")
 
 
