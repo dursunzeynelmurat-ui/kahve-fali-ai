@@ -47,16 +47,17 @@ def fal_bak(images_list, user_name, age, burc, status):
     response = model.generate_content([prompt] + images_list)
     return response.text
 
-# --- 3. ANA UYGULAMA AKIŞI ve ARAYÜZ (TEK YÜKLEYİCİ) ---
+# --- 3. ANA UYGULAMA AKIŞI ve ARAYÜZ ---
 
-st.title("☕ Sultan Abla - Çok Açılı Fal")
-st.markdown("### Kişisel Detaylarını Gir, 4 Farklı Fotoğrafı Yükle! 👇")
+st.title("☕ Sultan Abla - ")
+st.markdown("### 1. Detayları Gir Ablam, 2. Fotoğrafları Yükle! 👇")
 
 
 # KİŞİSEL GİRİŞLER (Sol Menü)
 st.sidebar.header("Kişisel Detaylar 👤")
 name = st.sidebar.text_input("Adın nedir?", "Misafir")
 
+# Yaş ve Burç aynı satırda
 col1, col2 = st.sidebar.columns(2)
 with col1:
     age = st.number_input("Yaşın kaç?", min_value=18, max_value=99, value=30, step=1)
@@ -65,25 +66,24 @@ BURCLAR = ["Koç", "Boğa", "İkizler", "Yengeç", "Aslan", "Başak", "Terazi", 
 with col2:
     burc = st.selectbox("Burcun nedir?", options=BURCLAR, index=4)
 
-status = st.radio(
+# MEDENİ DURUM ŞİMDİ SOL MENÜDE
+st.sidebar.markdown("---")
+status = st.sidebar.radio(
     "Medeni Durumun:",
-    ('Evli', 'Bekar', 'İlişkisi Var', 'İlişkisi Yok'),
-    horizontal=True
+    ('Evli', 'Bekar', 'İlişkisi Var', 'İlişkisi Yok')
 )
 
 st.markdown("---")
 
-# FOTOĞRAF YÜKLEYİCİ (Tek Buton)
+# FOTOĞRAF YÜKLEYİCİ (Tek Buton - Ana Ekran)
 st.subheader("4 Açıdan Fotoğraf Yükle 📸")
-st.warning("**ÖNEMLİ:** Lütfen fotoğrafları şu sırayla seçip yükleyin: 1. Fincan Ağzı, 2. Fincan Yan Açısı, 3. Fincan Dibi, 4. Tabak.")
+st.warning("**ÖNEMLİ:** Lütfen fotoğrafları sırayla seçin: 1. Fincan Ağzı, 2. Fincan Yan Açısı, 3. Fincan Dibi, 4. Tabak.")
 
-# --- TEK BUTONLU ÇOKLU YÜKLEYİCİ ---
 uploaded_files = st.file_uploader(
     "4 Fotoğrafı Buraya Sürükle veya Tıkla:", 
     type=["jpg", "png", "jpeg"],
-    accept_multiple_files=True # ÇOKLU SEÇİME İZİN VER
+    accept_multiple_files=True
 )
-# --- SON ---
 
 if st.button("Falıma Bak 🔮"):
     
