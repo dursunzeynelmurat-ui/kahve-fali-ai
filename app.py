@@ -76,9 +76,9 @@ st.markdown("---")
 # FOTOĞRAF YÜKLEYİCİLER (Ana Ekran)
 st.subheader("Fincan Fotoğrafları Yükle (3 Adet)")
 
-uploaded_file1 = st.file_uploader("1. Fincan Ağzı (Yakın Gelecek)", type=["jpg", "png", "jpeg"])
-uploaded_file2 = st.file_uploader("2. Fincan Tabanı (Geçmiş/Uzun Vadeli)", type=["jpg", "png", "jpeg"])
-uploaded_file3 = st.file_uploader("3. Kahve Tabağı (Dış Dünya/Şans)", type=["jpg", "png", "jpeg"])
+uploaded_file1 = st.file_uploader("1. Fincan Ağzı ", type=["jpg", "png", "jpeg"])
+uploaded_file2 = st.file_uploader("2. Fincan Tabanı ", type=["jpg", "png", "jpeg"])
+uploaded_file3 = st.file_uploader("3. Kahve Tabağı ", type=["jpg", "png", "jpeg"])
 
 all_uploaded_files = [uploaded_file1, uploaded_file2, uploaded_file3]
 
