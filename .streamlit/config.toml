@@ -1,0 +1,11 @@
+[theme]
+# Mistik bir hava için koyu tema
+base="dark" 
+# Uygulamanın ana rengi (Kahve/Altın Tonları)
+primaryColor="#F0B76F" 
+# Ana içerik için koyu arka plan
+backgroundColor="#0D1A25"
+# Yan panel ve ikincil arka planlar için daha açık koyu ton
+secondaryBackgroundColor="#1C2D39"
+# Yazı rengi
+textColor="#FAFAFA"
