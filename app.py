@@ -18,7 +18,7 @@ except Exception as e:
     st.stop()
 # -----------------------------
 
-# --- 2. GEMINI FAL FONKSİYONU (Prompt Detaylı Kalacak) ---
+# --- 2. GEMINI FAL FONKSİYONU (PROMPT Güncellendi) ---
 def fal_bak(images_list, user_name, age, burc, status):
     model = genai.GenerativeModel('gemini-2.5-flash')
     
@@ -26,9 +26,10 @@ def fal_bak(images_list, user_name, age, burc, status):
     Sen Sultan Abla adında, tatlı dilli ve hisleri kuvvetli bir falcısın. Geleneksel Türk kahvesi falı bakıyorsun.
     
     Kullanıcı Bilgileri: Adı: {user_name}, Yaşı: {age}, Burcu: {burc}, Medeni Durumu: {status}.
-    Bu bilgileri kullanarak falı yorumla.
     
-    Sana tam 4 adet fotoğraf gönderdim ve **bunların sırası ve anlamları şöyledir:**
+    **ÖNEMLİ TALİMAT:** Medeni Durum bilgisini Aşk yorumlarını kişiselleştirmek için kullan, ancak **Burç bilgisini ana fal yorumuna çok fazla katma**. Burç bilgisini sadece en sonda istenen Günlük Burç Yorumu kısmında kullan.
+    
+    Sana tam 4 adet fotoğraf gönderdim ve bunların sırası ve anlamları şöyledir:
     
     **Fotoğraf 1 (İlk Yüklenen): Fincan Ağzı (Yakın Gelecek):** Fincanın üst kısımları, kişinin o anki ruh hali ve yakın zamanda gerçekleşecek olayları simgeler.
     **Fotoğraf 2 (İkinci Yüklenen): Fincan Yan Açısı (Mevcut Engeller):** Fincanın yan duvarları ve dikey çizgiler, kişinin mevcut hayat yolundaki engelleri veya hızlı çözümleri gösterir.
@@ -37,11 +38,13 @@ def fal_bak(images_list, user_name, age, burc, status):
     
     Lütfen tüm bu dört görseli birbirleriyle ilişkilendirerek, kapsamlı ve derinlemesine bir yorum yap.
     
-    Kurallar:
-    1. Her bir fotoğraftaki belirgin şekilleri (Kuş, Yılan, Kalp, Yol vb.) benzetim yaparak yorumla.
-    2. Yorumlarını şu başlıklarda topla: Genel Durum, Aşk ve İlişkiler, Kariyer ve Para, Genel Tavsiye.
-    3. Çok mistik, samimi ("Canım", "Kuzum") bir dil kullan.
-    4. Falı güzel bir mani veya dilek ile bitir.
+    **İstenen Format:**
+    1.  **### 📜 İşte Sultan Abladan Sana Özel Fal Yorumu:** Başlığı altında, sadece telve ve kişisel duruma dayalı (burçsuz) yorumu yap.
+    2.  Yorumlarını şu ana başlıklarda topla: Genel Durum, Aşk ve İlişkiler, Kariyer ve Para, Genel Tavsiye.
+    3.  Çok mistik, samimi ("Canım", "Kuzum") bir dil kullan.
+    4.  Fal yorumunu güzel bir mani veya dilek ile bitir.
+    5.  **---** (Ayırıcı Çizgi Koy)
+    6.  **### ☀️ Günlük Burç Yorumun:** Başlığı altında, kullanıcının Burcu ({burc}) için kısa, pozitif ve genel bir günlük burç yorumu ekle.
     '''
     
     response = model.generate_content([prompt] + images_list)
@@ -49,7 +52,7 @@ def fal_bak(images_list, user_name, age, burc, status):
 
 # --- 3. ANA UYGULAMA AKIŞI ve ARAYÜZ ---
 
-st.title("☕ Sultan Abla ☕  ")
+st.title("☕ Sultan Abla ")
 st.markdown("### 1. Detayları Girin, 2. Fotoğrafları Yükleyin! 👇")
 
 
@@ -73,9 +76,8 @@ status = st.sidebar.radio(
 st.markdown("---")
 
 # FOTOĞRAF YÜKLEYİCİ (Tek Buton - Ana Ekran)
-# Yükleme Etiketi Basitleştirildi
 st.subheader("4 Fotoğraf Yükle (3 Fincan + 1 Tabak) 📸") 
-st.warning("**ÖNEMLİ SIRA:** Lütfen sırasıyla **Fincan Ağzı, Fincan Yanı, Fincan Dibi ve Tabak** fotoğraflarını seçin.")
+st.error("**ÇOK ÖNEMLİ SIRA:** Lütfen fotoğrafları **TEK SEFERDE** ve bu sırayla seçin: **1. Fincan Ağzı, 2. Fincan Yan Açısı, 3. Fincan Dibi, 4. Tabak.** Aksi halde fal yanlış çıkar.")
 
 uploaded_files = st.file_uploader(
     "Fotoğrafları Buraya Sürükle veya Tıkla:", 
@@ -85,17 +87,14 @@ uploaded_files = st.file_uploader(
 
 if st.button("Falıma Bak 🔮"):
     
-    # Yüklenen dosya sayısı kontrolü
     if uploaded_files is None or len(uploaded_files) != 4:
         st.error("Lütfen tam olarak 4 fotoğraf (3 fincan, 1 tabak) yüklediğinizden emin olun.")
     else:
-        with st.spinner('Sultan Abla fincanın tüm açılarına odaklanıyor...'):
+        with st.spinner('Sultan Abla hem fincana bakıyor, hem de burcunu yorumluyor...'):
             try:
-                # Yüklenen dosyaları PIL Image nesnelerine dönüştürüyoruz
                 images_to_send = [Image.open(f) for f in uploaded_files]
                 
-                # Tüm 4 görseli yan yana göster
-                st.write("Yüklenen Fincanlar (Kontrol):")
+                st.write("Yüklenen Fincanlar (Sıra Kontrolü):")
                 cols_img = st.columns(4)
                 labels = ["1. Ağız", "2. Yan", "3. Dip", "4. Tabak"]
                 for i, img in enumerate(images_to_send):
@@ -106,8 +105,8 @@ if st.button("Falıma Bak 🔮"):
                 
                 st.balloons()
                 st.success("Falın Çıktı!")
-                st.markdown("### 📜 İşte Sultan Abladan Sana Özel Yorum:")
-                st.write(fal_yorum)
+                # Fal yorumu artık doğrudan modelden gelen formatla yazdırılıyor
+                st.markdown(fal_yorum) 
                 
             except Exception as e:
                 st.error(f"Bir hata oluştu: {e}")
