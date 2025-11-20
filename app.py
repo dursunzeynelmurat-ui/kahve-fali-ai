@@ -18,7 +18,7 @@ except Exception as e:
     st.stop()
 # -----------------------------
 
-# --- 2. GEMINI FAL FONKSİYONU ---
+# --- 2. GEMINI FAL FONKSİYONU (Prompt Detaylı Kalacak) ---
 def fal_bak(images_list, user_name, age, burc, status):
     model = genai.GenerativeModel('gemini-2.5-flash')
     
@@ -28,12 +28,12 @@ def fal_bak(images_list, user_name, age, burc, status):
     Kullanıcı Bilgileri: Adı: {user_name}, Yaşı: {age}, Burcu: {burc}, Medeni Durumu: {status}.
     Bu bilgileri kullanarak falı yorumla.
     
-    Sana tam 4 adet fotoğraf gönderdim ve bunlar sırasıyla şu anlamlara geliyor:
+    Sana tam 4 adet fotoğraf gönderdim ve **bunların sırası ve anlamları şöyledir:**
     
-    **Fotoğraf 1: Fincan Ağzı (Yakın Gelecek):** Fincanın üst kısımları, kişinin o anki ruh hali ve yakın zamanda gerçekleşecek olayları simgeler.
-    **Fotoğraf 2: Fincan Yan Açısı (Mevcut Engeller):** Fincanın yan duvarları ve dikey çizgiler, kişinin mevcut hayat yolundaki engelleri veya hızlı çözümleri gösterir.
-    **Fotoğraf 3: Fincan Ortası/Dibi (Uzun Vadeli Olaylar):** Fincanın altı, kişinin geçmişten gelen etkilerini ve uzun vadede gerçekleşecek önemli olayları temsil eder.
-    **Fotoğraf 4: Kahve Tabağı (Dış Dünya/Aile/Şans):** Tabak, kişinin aile hayatını, sosyal çevresini ve genel şansını simgeler.
+    **Fotoğraf 1 (İlk Yüklenen): Fincan Ağzı (Yakın Gelecek):** Fincanın üst kısımları, kişinin o anki ruh hali ve yakın zamanda gerçekleşecek olayları simgeler.
+    **Fotoğraf 2 (İkinci Yüklenen): Fincan Yan Açısı (Mevcut Engeller):** Fincanın yan duvarları ve dikey çizgiler, kişinin mevcut hayat yolundaki engelleri veya hızlı çözümleri gösterir.
+    **Fotoğraf 3 (Üçüncü Yüklenen): Fincan Ortası/Dibi (Uzun Vadeli Olaylar):** Fincanın altı, kişinin geçmişten gelen etkilerini ve uzun vadede gerçekleşecek önemli olayları temsil eder.
+    **Fotoğraf 4 (Dördüncü Yüklenen): Kahve Tabağı (Dış Dünya/Aile/Şans):** Tabak, kişinin aile hayatını, sosyal çevresini ve genel şansını simgeler.
     
     Lütfen tüm bu dört görseli birbirleriyle ilişkilendirerek, kapsamlı ve derinlemesine bir yorum yap.
     
@@ -49,15 +49,14 @@ def fal_bak(images_list, user_name, age, burc, status):
 
 # --- 3. ANA UYGULAMA AKIŞI ve ARAYÜZ ---
 
-st.title("☕ Sultan Abla - ")
-st.markdown("### 1. Detayları Gir Ablam, 2. Fotoğrafları Yükle! 👇")
+st.title("☕ Sultan Abla ☕  ")
+st.markdown("### 1. Detayları Girin, 2. Fotoğrafları Yükleyin! 👇")
 
 
 # KİŞİSEL GİRİŞLER (Sol Menü)
 st.sidebar.header("Kişisel Detaylar 👤")
 name = st.sidebar.text_input("Adın nedir?", "Misafir")
 
-# Yaş ve Burç aynı satırda
 col1, col2 = st.sidebar.columns(2)
 with col1:
     age = st.number_input("Yaşın kaç?", min_value=18, max_value=99, value=30, step=1)
@@ -66,8 +65,6 @@ BURCLAR = ["Koç", "Boğa", "İkizler", "Yengeç", "Aslan", "Başak", "Terazi", 
 with col2:
     burc = st.selectbox("Burcun nedir?", options=BURCLAR, index=4)
 
-# MEDENİ DURUM ŞİMDİ SOL MENÜDE
-st.sidebar.markdown("---")
 status = st.sidebar.radio(
     "Medeni Durumun:",
     ('Evli', 'Bekar', 'İlişkisi Var', 'İlişkisi Yok')
@@ -76,11 +73,12 @@ status = st.sidebar.radio(
 st.markdown("---")
 
 # FOTOĞRAF YÜKLEYİCİ (Tek Buton - Ana Ekran)
-st.subheader("4 Açıdan Fotoğraf Yükle 📸")
-st.warning("**ÖNEMLİ:** Lütfen fotoğrafları sırayla seçin: 1. Fincan Ağzı, 2. Fincan Yan Açısı, 3. Fincan Dibi, 4. Tabak.")
+# Yükleme Etiketi Basitleştirildi
+st.subheader("4 Fotoğraf Yükle (3 Fincan + 1 Tabak) 📸") 
+st.warning("**ÖNEMLİ SIRA:** Lütfen sırasıyla **Fincan Ağzı, Fincan Yanı, Fincan Dibi ve Tabak** fotoğraflarını seçin.")
 
 uploaded_files = st.file_uploader(
-    "4 Fotoğrafı Buraya Sürükle veya Tıkla:", 
+    "Fotoğrafları Buraya Sürükle veya Tıkla:", 
     type=["jpg", "png", "jpeg"],
     accept_multiple_files=True
 )
@@ -89,7 +87,7 @@ if st.button("Falıma Bak 🔮"):
     
     # Yüklenen dosya sayısı kontrolü
     if uploaded_files is None or len(uploaded_files) != 4:
-        st.error("Lütfen tam olarak 4 fotoğraf yüklediğinizden emin olun.")
+        st.error("Lütfen tam olarak 4 fotoğraf (3 fincan, 1 tabak) yüklediğinizden emin olun.")
     else:
         with st.spinner('Sultan Abla fincanın tüm açılarına odaklanıyor...'):
             try:
