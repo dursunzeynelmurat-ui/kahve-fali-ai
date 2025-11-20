@@ -9,7 +9,7 @@ st.set_page_config(
     layout="centered"
 )
 
-# --- 1. API KEY AYARI (Secrets'tan Okuma) ---
+# --- 1. API KEY AYARI ---
 try:
     gemini_api_key = st.secrets["GEMINI_API_KEY"] 
     genai.configure(api_key=gemini_api_key)
@@ -18,7 +18,7 @@ except Exception as e:
     st.stop()
 # -----------------------------
 
-# --- 2. GEMINI FAL FONKSİYONU (4 Resim Destekli PROMPT Güncellendi) ---
+# --- 2. GEMINI FAL FONKSİYONU ---
 def fal_bak(images_list, user_name, age, burc, status):
     model = genai.GenerativeModel('gemini-2.5-flash')
     
@@ -28,7 +28,7 @@ def fal_bak(images_list, user_name, age, burc, status):
     Kullanıcı Bilgileri: Adı: {user_name}, Yaşı: {age}, Burcu: {burc}, Medeni Durumu: {status}.
     Bu bilgileri kullanarak falı yorumla.
     
-    Sana {len(images_list)} adet, dört farklı açıdan çekilmiş kahve falı fotoğrafı gönderdim. Lütfen her bir fotoğrafı dikkatlice incele.
+    Sana tam 4 adet fotoğraf gönderdim ve bunlar sırasıyla şu anlamlara geliyor:
     
     **Fotoğraf 1: Fincan Ağzı (Yakın Gelecek):** Fincanın üst kısımları, kişinin o anki ruh hali ve yakın zamanda gerçekleşecek olayları simgeler.
     **Fotoğraf 2: Fincan Yan Açısı (Mevcut Engeller):** Fincanın yan duvarları ve dikey çizgiler, kişinin mevcut hayat yolundaki engelleri veya hızlı çözümleri gösterir.
@@ -44,11 +44,10 @@ def fal_bak(images_list, user_name, age, burc, status):
     4. Falı güzel bir mani veya dilek ile bitir.
     '''
     
-    # Prompt ve resim listesi Gemini'ye gönderiliyor
     response = model.generate_content([prompt] + images_list)
     return response.text
 
-# --- 3. ANA UYGULAMA AKIŞI ve ARAYÜZ (4 YÜKLEYİCİ) ---
+# --- 3. ANA UYGULAMA AKIŞI ve ARAYÜZ (TEK YÜKLEYİCİ) ---
 
 st.title("☕ Sultan Abla - Çok Açılı Fal")
 st.markdown("### Kişisel Detaylarını Gir, 4 Farklı Fotoğrafı Yükle! 👇")
@@ -74,35 +73,36 @@ status = st.radio(
 
 st.markdown("---")
 
-# FOTOĞRAF YÜKLEYİCİLER (Ana Ekran)
-st.subheader("Fincan Fotoğrafları Yükle (4 Adet) 📸")
+# FOTOĞRAF YÜKLEYİCİ (Tek Buton)
+st.subheader("4 Açıdan Fotoğraf Yükle 📸")
+st.warning("**ÖNEMLİ:** Lütfen fotoğrafları şu sırayla seçip yükleyin: 1. Fincan Ağzı, 2. Fincan Yan Açısı, 3. Fincan Dibi, 4. Tabak.")
 
-# YENİ 4 YÜKLEYİCİ TANIMLANIYOR
-uploaded_file1 = st.file_uploader("1. Fincan Ağzı (Yakın Gelecek)", type=["jpg", "png", "jpeg"])
-uploaded_file2 = st.file_uploader("2. Fincan Yan Açısı (Mevcut Engeller)", type=["jpg", "png", "jpeg"])
-uploaded_file3 = st.file_uploader("3. Fincan Ortası/Dibi (Uzun Vadeli Olaylar)", type=["jpg", "png", "jpeg"])
-uploaded_file4 = st.file_uploader("4. Kahve Tabağı (Dış Dünya/Aile)", type=["jpg", "png", "jpeg"])
-
-all_uploaded_files = [uploaded_file1, uploaded_file2, uploaded_file3, uploaded_file4] # 4 Dosya listesi
+# --- TEK BUTONLU ÇOKLU YÜKLEYİCİ ---
+uploaded_files = st.file_uploader(
+    "4 Fotoğrafı Buraya Sürükle veya Tıkla:", 
+    type=["jpg", "png", "jpeg"],
+    accept_multiple_files=True # ÇOKLU SEÇİME İZİN VER
+)
 # --- SON ---
 
 if st.button("Falıma Bak 🔮"):
     
-    # Tüm 4 dosyanın yüklendiğinden emin ol
-    if not all(all_uploaded_files):
-        st.error("Lütfen 4 fotoğrafın tamamını yükleyin.")
+    # Yüklenen dosya sayısı kontrolü
+    if uploaded_files is None or len(uploaded_files) != 4:
+        st.error("Lütfen tam olarak 4 fotoğraf yüklediğinizden emin olun.")
     else:
         with st.spinner('Sultan Abla fincanın tüm açılarına odaklanıyor...'):
             try:
                 # Yüklenen dosyaları PIL Image nesnelerine dönüştürüyoruz
-                images_to_send = [Image.open(f) for f in all_uploaded_files]
+                images_to_send = [Image.open(f) for f in uploaded_files]
                 
                 # Tüm 4 görseli yan yana göster
-                st.write("Yüklenen Fincanlar:")
+                st.write("Yüklenen Fincanlar (Kontrol):")
                 cols_img = st.columns(4)
+                labels = ["1. Ağız", "2. Yan", "3. Dip", "4. Tabak"]
                 for i, img in enumerate(images_to_send):
                     with cols_img[i]:
-                        st.image(img, caption=f"Fotoğraf {i+1}", width=120)
+                        st.image(img, caption=labels[i], width=120)
 
                 fal_yorum = fal_bak(images_to_send, name, age, burc, status) 
                 
